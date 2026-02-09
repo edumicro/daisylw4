@@ -1,6 +1,5 @@
 🚀 edumicro/daisylw4
- Daisy UI styled LiveWire 4 SFC Components with creators command and Autoforms
-
+**DaisyUI SFC components for Livewire 4 & Volt. Includes Auto-Form orchestrator, Smart Selects, and CLI scaffolding.**
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
 [![Total Downloads](https://img.shields.io/packagist/dt/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
