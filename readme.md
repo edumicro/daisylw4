@@ -5,7 +5,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
 [![License](https://img.shields.io/packagist/l/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
 
-**The ultimate "View Painter" for Laravel 12 & Livewire 4.**
+**`daisylw4` is a productivity-first package for Laravel 12. It provides a set of Single File Components (SFC) styled with DaisyUI, powered by Livewire 4 and Volt, designed to eliminate boilerplate when building complex admin interfaces.**
 
 🛠 Installation
 1.- Install via Composer:
@@ -68,6 +68,15 @@ Namespace: daisylw4::
 Blade Usage: <livewire:daisylw4.{section}.{name} />
 
 Customization: All files are located in resources/views/vendor/daisylw4.
+
+
+
+
+## ❤️ Support Development
+
+If `daisylw4` helps you build apps faster, consider supporting its maintenance. Your sponsorship helps keep the project updated with the latest Laravel and Livewire features.
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23EA4AAA.svg?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/edumicro)
 
 
 
