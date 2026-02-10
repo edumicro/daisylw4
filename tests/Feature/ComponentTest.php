@@ -5,7 +5,15 @@
         $component = Volt::test('actions.button');
 
         $component->assertStatus(200)
-                // Buscamos solo la parte clave, sin preocuparnos por las comillas escapadas
+                
                 ->assertSee('button')
                 ->assertSee('type='); 
+    });
+
+
+    it('renders using the correct namespace tag', function () {
+   
+        $view = $this->blade('<livewire:actions.button />');
+
+        $view->assertSee('button');
     });

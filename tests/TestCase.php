@@ -26,12 +26,17 @@ class TestCase extends Orchestra
 
     protected function defineEnvironment($app)
     {
+        $viewsPath = realpath(__DIR__ . '/../resources/views');
         //set view paths for testing
         \Livewire\Volt\Volt::mount([
-            __DIR__ . '/../resources/views/daisylw4',
+          $viewsPath . '/daisylw4',
         ]);
 
         //set aplicattion key for testing
         $app['config']->set('app.key', 'base64:u8699dvS9Sshis7B8X85y3EdfP3Sshis7B8X85y3Edf=');
+
+        // Add the view namespace for testing
+        $app['view']->addNamespace('daisylw4', realpath(__DIR__ . '/../resources/views/daisylw4'));
+
     }
 }
