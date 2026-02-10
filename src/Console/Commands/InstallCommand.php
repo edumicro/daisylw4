@@ -1,6 +1,6 @@
 <?php
 
-namespace Edumicro\DaisyUI\Console\Commands;
+namespace EduMicro\DaisyLw4\Console\Commands;
 
 use Illuminate\Console\Command;
 

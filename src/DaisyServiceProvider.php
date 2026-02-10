@@ -1,11 +1,11 @@
 <?php
 
-namespace Edumicro\DaisyUI;
+namespace EduMicro\DaisyLw4;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 use Livewire\Volt\Volt;
-use Edumicro\DaisyUI\Console\Commands\InstallCommand;
+use EduMicro\DaisyLw4\Console\Commands\InstallCommand;
 
 class DaisyServiceProvider extends ServiceProvider
 {
@@ -30,11 +30,11 @@ class DaisyServiceProvider extends ServiceProvider
         $vendorRoot = __DIR__.'/../resources/views';
 
         if (\Illuminate\Support\Facades\File::isDirectory($publishedRoot)) {
-            \Livewire\Volt\Volt::mount($publishedRoot);
+            Volt::mount($publishedRoot);
         }
 
         if (\Illuminate\Support\Facades\File::isDirectory($vendorRoot)) {
-            \Livewire\Volt\Volt::mount($vendorRoot);
+            Volt::mount($vendorRoot);
         }
 
 
@@ -62,7 +62,7 @@ class DaisyServiceProvider extends ServiceProvider
             // Register Commands
             $this->commands([
                 InstallCommand::class,
-                \Edumicro\DaisyUI\Console\Commands\MakeDaisyComponent::class,
+                \EduMicro\DaisyLw4\Console\Commands\MakeDaisyComponent::class,
             ]);
         }
     }
