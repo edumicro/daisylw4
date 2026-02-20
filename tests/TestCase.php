@@ -23,6 +23,7 @@ class TestCase extends Orchestra
         $viewsPath = realpath(__DIR__ . '/../resources/views');
         $componentsPath = $viewsPath . '/daisylw4';
 
+        Livewire::addLocation(viewPath: $viewsPath);
         Livewire::addNamespace('daisylw4', viewPath: $componentsPath);
 
         //set aplicattion key for testing

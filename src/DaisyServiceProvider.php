@@ -24,13 +24,18 @@ class DaisyServiceProvider extends ServiceProvider
        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'daisylw4');
        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
 
-        // 3. Register Livewire components namespace without Volt
-        $publishedRoot = resource_path('views/vendor/daisylw4');
-        $vendorRoot = __DIR__.'/../resources/views/daisylw4';
+        // 3. Register Livewire components paths without Volt
+        $publishedRoot = resource_path('views/vendor');
+        $vendorRoot = __DIR__.'/../resources/views';
         $componentsRoot = File::isDirectory($publishedRoot) ? $publishedRoot : $vendorRoot;
 
         if (File::isDirectory($componentsRoot)) {
-            Livewire::addNamespace('daisylw4', viewPath: $componentsRoot);
+            Livewire::addLocation(viewPath: $componentsRoot);
+
+            $namespacedPath = $componentsRoot.'/daisylw4';
+            if (File::isDirectory($namespacedPath)) {
+                Livewire::addNamespace('daisylw4', viewPath: $namespacedPath);
+            }
         }
 
 
