@@ -1,11 +1,11 @@
 🚀 edumicro/daisylw4
-**DaisyUI SFC components for Livewire 4 & Volt. Includes Auto-Form orchestrator, Smart Selects, and CLI scaffolding.**
+**DaisyUI SFC components for Livewire 4. Includes Auto-Form orchestrator, Smart Selects, and CLI scaffolding.**
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
 [![Total Downloads](https://img.shields.io/packagist/dt/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
 [![License](https://img.shields.io/packagist/l/edumicro/daisylw4.svg?style=flat-square)](https://packagist.org/packages/edumicro/daisylw4)
 
-**`daisylw4` is a productivity-first package for Laravel 12. It provides a set of Single File Components (SFC) styled with DaisyUI, powered by Livewire 4 and Volt, designed to eliminate boilerplate when building complex admin interfaces.**
+**`daisylw4` is a productivity-first package for Laravel 12. It provides a set of Single File Components (SFC) styled with DaisyUI, powered by native Livewire 4, designed to eliminate boilerplate when building complex admin interfaces.**
 
 🛠 Installation
 1.- Install via Composer:

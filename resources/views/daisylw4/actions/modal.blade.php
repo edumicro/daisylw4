@@ -1,9 +1,8 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Volt\Component as VoltComponent;
 
-new class extends VoltComponent {
+new class extends Component {
     /**
      * Mandatory edumicro standard props
      */

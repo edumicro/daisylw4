@@ -1,9 +1,9 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Volt\Component as VoltComponent;
+use Livewire\Attributes\Modelable;
 
-new class extends VoltComponent {
+new class extends Component {
     /**
      * Mandatory edumicro standard props
      */
@@ -18,6 +18,7 @@ new class extends VoltComponent {
      * Datatable Filters specific props
      */
     public array $availableFilters = [];
+    #[Modelable]
     public array $activeFilters = [];
     public string $icon = 'heroicon-o-funnel';
     public bool $showBadge = true;
@@ -51,8 +52,9 @@ new class extends VoltComponent {
      */
     public function getActiveFilterCount(): int
     {
-        return count(array_filter($this->activeFilters, fn($v) => !empty($v)));
+        return count(array_filter($this->activeFilters, fn($v) => $v !== '' && $v !== null));
     }
+    
 
     /**
      * Check if filter is active
@@ -74,8 +76,10 @@ new class extends VoltComponent {
         class="btn btn-sm btn-ghost gap-2 {{ $class }}"
         title="{{ trans('daisylw4::filters') }}"
     >
-        <x-dynamic-component :component="$icon" class="w-4 h-4" />
-        
+    
+        <x-dynamic-component :component="$icon" class="w-4 h-4" wire:loading.remove wire:target="activeFilters" />
+    <span class="loading loading-spinner loading-xs" wire:loading wire:target="activeFilters"></span>
+    
         @if ($label)
             <span>{{ $label }}</span>
         @else

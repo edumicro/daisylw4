@@ -6,7 +6,7 @@
  * Created by edumicro daisy-ui Livewire 4 components
  */
 
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 new class extends Component {
     /**

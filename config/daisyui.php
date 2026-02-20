@@ -5,7 +5,7 @@ return [
     |--------------------------------------------------------------------------
     | Component Mapping
     |--------------------------------------------------------------------------
-    | Here you define which Livewire Volt component is responsible for each type 
+    | Here you define which Livewire component is responsible for each type 
     | of field in the Auto-Form. You can extend it with your own components.
     */
     'component_map' => [

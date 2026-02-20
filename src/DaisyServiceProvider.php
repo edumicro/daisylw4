@@ -4,7 +4,7 @@ namespace EduMicro\DaisyLw4;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 use EduMicro\DaisyLw4\Console\Commands\InstallCommand;
 
 class DaisyServiceProvider extends ServiceProvider
@@ -24,17 +24,13 @@ class DaisyServiceProvider extends ServiceProvider
        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'daisylw4');
        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
 
-        // 3. Register Livewire Volt Components
+        // 3. Register Livewire components namespace without Volt
+        $publishedRoot = resource_path('views/vendor/daisylw4');
+        $vendorRoot = __DIR__.'/../resources/views/daisylw4';
+        $componentsRoot = File::isDirectory($publishedRoot) ? $publishedRoot : $vendorRoot;
 
-        $publishedRoot = resource_path('views/vendor');
-        $vendorRoot = __DIR__.'/../resources/views';
-
-        if (\Illuminate\Support\Facades\File::isDirectory($publishedRoot)) {
-            Volt::mount($publishedRoot);
-        }
-
-        if (\Illuminate\Support\Facades\File::isDirectory($vendorRoot)) {
-            Volt::mount($vendorRoot);
+        if (File::isDirectory($componentsRoot)) {
+            Livewire::addNamespace('daisylw4', viewPath: $componentsRoot);
         }
 
 

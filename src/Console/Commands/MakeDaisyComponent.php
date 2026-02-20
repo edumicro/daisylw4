@@ -50,7 +50,7 @@ class MakeDaisyComponent extends Command
  * Agnostic UI Component for Daisylw4
  */
 
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 new class extends Component {
     public string \$model = '';

@@ -1,7 +1,7 @@
 ⚡ Quick Start: Your first Auto-Form
 Want to create a full "Contact Us" form with validation and a clean layout? Just pass this array to the auto-form:
 
-    // Inside your Livewire/Volt Component
+    // Inside your Livewire Component
     $schema = [
         [
             'name'  => 'full_name', 

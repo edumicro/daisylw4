@@ -1,13 +1,12 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Volt\Component as VoltComponent;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-new class extends VoltComponent {
+new class extends Component {
     use WithPagination;
 
     /**
