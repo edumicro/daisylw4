@@ -1,0 +1,32 @@
+name: Docs Link Check
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - '.github/workflows/docs-link-check.yml'
+  push:
+    paths:
+      - 'docs/**/*.md'
+      - '.github/workflows/docs-link-check.yml'
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Markdown links (docs)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --max-retries 2
+            --retry-wait-time 2
+            --accept 200,429
+            --exclude-mail
+            docs/**/*.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
