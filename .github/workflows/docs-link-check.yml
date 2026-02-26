@@ -21,12 +21,14 @@ jobs:
       - name: Validate Markdown links (docs)
         uses: lycheeverse/lychee-action@v2
         with:
+          fail: true
+          failIfEmpty: true
+          lycheeVersion: v0.23.0
           args: >-
             --no-progress
             --max-retries 2
             --retry-wait-time 2
             --accept 200,429
-            --exclude-mail
             docs/**/*.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
