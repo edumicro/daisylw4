@@ -21,7 +21,7 @@ new class extends Component {
 
 @php
     // Translation logic
-    $indicatorLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
+    $indicatorLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
     
     // Build indicator item classes
     $indicatorItemClasses = trim(implode(' ', array_filter([

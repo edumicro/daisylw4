@@ -56,7 +56,7 @@ new class extends Component {
     <div class="chat-bubble {{ $this->isSent() ? 'chat-bubble-primary' : 'chat-bubble-neutral' }} {{ $class }}">
         @if ($loading)
             <span class="loading loading-spinner loading-sm"></span>
-            {{ trans('daisylw4::typing') }}
+            {{ trans('DaisyLw4::typing') }}
         @else
             <div class="flex items-start gap-2">
                 @if ($icon)

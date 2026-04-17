@@ -1,286 +1,167 @@
 <?php
-/**
- * Component: form.auto-form
- * Orchestrator component that dynamically renders form fields based on a schema array
- * Supports wire:model prefixing and includes a submit button
- * Created by edumicro daisy-ui Livewire 4 components
- */
 
 use Livewire\Component;
+use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\DB;
 
 new class extends Component {
-    /**
-     * Form schema definition
-     * Structure: [
-     *     [
-     *         'name' => 'username',
-     *         'type' => 'text', // input, select, checkbox, toggle, etc.
-     *         'label' => 'Username',
-     *         'placeholder' => 'Enter your username',
-     *         'options' => [], // For select components
-     *         'class' => '', // Custom classes for field
-     *         'rules' => 'required|min:3', // Validation rules
-     *         'icon' => 'heroicon-o-user', // Optional icon
-     *         'iconSide' => 'left',
-     *        'cols' => 'col-span-6', // Grid column span
-     *     ],
-     *     ...
-     * ]
-     */
-    public array $schema = [];
-
-    /**
-     * Model prefix for wire:model
-     * e.g., 'form.username' -> wire:model="form.username"
-     */
-    public string $modelPrefix = '';
-
-
-    public string $model = '';
-
-    /**
-     * Submit button configuration
-     */
-    public string $submitLabel = 'Submit';
-    public string $submitVariant = 'btn-primary';
-    public bool $submitLoading = false;
-    public bool $submitDisabled = false;
-
-    /**
-     * Optional: The actual Eloquent record for editing
-     */
+    public array $filters = [];
     public ?\Illuminate\Database\Eloquent\Model $record = null;
+    public string $model = '';
+    public array $formValues = [];
+    public string $modelPrefix = 'record';
+    public array $schema = [];
+    public string $action = '';
 
-    /**
-     * Form styling
-     */
-    public string $containerClass = 'space-y-4';
+    public string $submitLabel = '';
+    public string $submitVariant = 'btn-primary';
     public string $class = '';
 
-    /**
-     * Component instance mapping
-     */
-    protected array $componentMap = [
-        'text' => 'form.input',
-        'email' => 'form.input',
-        'password' => 'form.input',
-        'number' => 'form.input',
-        'tel' => 'form.input',
-        'url' => 'form.input',
-        'date' => 'form.input',
-        'time' => 'form.input',
-        'textarea' => 'form.textarea',
-        'relation' => 'form.select',
-        'select' => 'form.select',
-        'checkbox' => 'form.checkbox',
-        'toggle' => 'form.toggle',
-        'radio' => 'form.radio',
-    ];
-
-    public function mount(): void
+    public function mount($section = null, $filters = [], $model = null, $schema = [], $values = [], $action = '') :void
     {
-        //
-    }
+        $this->filters = is_array($filters) ? $filters : [];
 
-    /**
-     * Main save method
-     */
-    public function save(): void
-    {
-        // 1. Validate data based on schema rules
-        $validatedData = $this->validate($this->getRules());
+        $this->model = is_string($model) ? $model : '';
+        $this->action = $action;
 
-        // 2. Clean the prefix from the data (e.g., from 'user.name' to 'name')
-        $data = collect($validatedData)
-            ->mapWithKeys(fn($value, $key) => [str_replace($this->modelPrefix . '.', '', $key) => $value])
-            ->toArray();
+        if ($section) {
+            $sectionSchema = (array) data_get($section, 'data.schema', []);
+            $sectionValues = (array) data_get($section, 'data.values', []);
+            $sectionAction = data_get($section, 'action');
 
-        try {
-            if ($this->record && $this->record->exists) {
-                // EDIT MODE
-                $this->record->update($data);
-                $this->dispatch('form-saved', id: $this->record->id, mode: 'updated');
-            } else {
-                // CREATE MODE
-                if (empty($this->model)) {
-                    throw new \Exception("Model class must be defined to create a new record.");
-                }
-                $newRecord = $this->model::create($data);
-                $this->dispatch('form-saved', id: $newRecord->id, mode: 'created');
-                
-                // Optional: Clear the form after creating
-                if (empty($this->modelPrefix)) {
-                    $this->reset(); 
-                } else {
-                    $this->reset($this->modelPrefix);
-                }
+            if (!empty($sectionSchema)) {
+                $this->schema = $sectionSchema;
+                $this->formValues = $sectionValues;
+                $this->modelPrefix = 'formValues';
             }
 
-            $this->dispatch('notify', type: 'success', message: 'Guardado correctamente');
+            if (is_string($sectionAction) && $sectionAction !== '') {
+                $this->action = $sectionAction;
+            }
+        }
 
-        } catch (\Exception $e) {
-            $this->dispatch('notify', type: 'error', message: 'Error al guardar: ' . $e->getMessage());
+        if ($schema) {
+            $this->schema = $schema;
+            $this->formValues = $values;
+            $this->modelPrefix = 'formValues';
+        }
+        if (!$this->record && !empty($this->model)) {
+            $this->record = new $this->model;
+        }
+
+        if (empty($this->submitLabel)) {
+           $this->submitLabel = __('Save');
         }
     }
 
-    /**
-     * Get the component name for a given field type
-     */
-   
-
-    public function getComponentForType($type)
+    public function updated($propertyName)
     {
-        return config("daisylw4.component_map.{$type}", 'daisylw4.form.input');
-    }
-
-    /**
-     * Build the wire:model path for a field
-     */
-    public function getModelPath(string $fieldName): string
-    {
-        if (empty($this->modelPrefix)) {
-            return $fieldName;
+        if (str_starts_with($propertyName, $this->modelPrefix . '.')) {
+            $this->validateOnly($propertyName);
         }
-
-        return "{$this->modelPrefix}.{$fieldName}";
     }
 
-    /**
-     * Handle form submission
-     */
-    public function submit(): void
+    #[Computed]
+    public function groupedSchema()
     {
-        // Validation is handled by the parent component
-        $this->dispatch('form-submitted', formData: $this->getFormData());
+        return collect($this->schema)
+            ->sortBy('order')
+            ->groupBy(fn($field) => $field['context'] ?? 'main');
     }
 
-    /**
-     * Get all form data as an array
-     */
-    public function getFormData(): array
-    {
-        $data = [];
-        foreach ($this->schema as $field) {
-            $modelPath = $this->getModelPath($field['name']);
-            $data[$field['name']] = data_get($this, $modelPath);
-        }
-        return $data;
-    }
-
-
-    /**
-     * Get validation rules from schema
-     */
-    public function getRules(): array
+    protected function rules(): array
     {
         $rules = [];
-        foreach ($this->schema as $field) {
-            if (isset($field['rules'])) {
-                $rules[$this->getModelPath($field['name'])] = $field['rules'];
+        foreach ($this->schema as $name => $field) {
+            $fieldRules = $field['rules'] ?? $field['validation'] ?? null;
+            if (is_string($fieldRules) && $fieldRules !== '') {
+                $rules["{$this->modelPrefix}.{$name}"] = $fieldRules;
             }
         }
         return $rules;
     }
 
-    /**
-     * Schema ordered by 'order' key
-     */
-    #[Computed]
-    public function orderedSchema(): array
+    public function save(): void
     {
-        return collect($this->schema)
-            ->map(function ($field, $index) {
-                // Ensure it has an order, if not, use multiples of 10
-                $field['order'] = $field['order'] ?? ($index + 1) * 10;
-                return $field;
-            })
-            ->sortBy('order')
-            ->values()
-            ->toArray();
+        if (!$this->record) return;
+        $this->validate();
+
+        try {
+            DB::beginTransaction();
+
+            $this->record->save();
+
+            $mode = $this->record->wasRecentlyCreated ? 'created' : 'updated';
+            $this->dispatch('form-saved', id: $this->record->id, mode: $mode);
+
+            if ($mode === 'created') {
+                $this->record = new $this->model;
+            }
+
+            DB::commit();
+            $this->dispatch('notify', type: 'success', message: 'Saved correctly');
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            $message = str_contains($e->getMessage(), 'Unknown column')
+                ? "Error: Missing column in DB. Check migrations."
+                : "Database error.";
+            $this->dispatch('notify', type: 'error', message: $message);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('notify', type: 'error', message: $e->getMessage());
+        }
     }
 
-    /**
-     * Resolve options for select/relation fields
-     */
-    public function getFieldOptions(array $field): array
-    {
-        // Si ya trae opciones estáticas, las usamos
-        if (!empty($field['options'])) {
-            return $field['options'];
-        }
-
-        // Si es una relación, intentamos resolverla
-        if (($field['type'] ?? '') === 'relation' && isset($field['relation_model'])) {
-            $model = $field['relation_model'];
-            $labelField = $field['relation_label'] ?? config('daisylw4.relations.default_label', 'name');
-            $valueField = $field['relation_value'] ?? 'id';
-
-            return $model::all()->pluck($labelField, $valueField)->toArray();
-        }
-
-        return [];
-    }
 }; ?>
 
-<form wire:submit.prevent="save" class="{{ $containerClass }}">
-    <div class="grid grid-cols-12 gap-x-4 gap-y-2 {{ $class }}">
-        @foreach($this->orderedSchema as $field) 
-            @php
-                $fieldName = $field['name'];
-                $fieldType = $field['type'] ?? 'text';
-                $component = $this->getComponentForType($fieldType);
-                $modelPath = $this->getModelPath($fieldName);
-                $cols = $field['cols'] ?? 'col-span-12';
-                
-                // If data-origin is not set, default to 'core' , this is for tracking where the field comes from
-                $origin = $field['data-origin'] ?? 'core';
-                
-                // Options resolution (relations or static)
-                $options = ($fieldType === 'relation' || $fieldType === 'select') 
-                    ? $this->getFieldOptions($field) 
-                    : ($field['options'] ?? []);
-            @endphp
+<div class="auto-form-container">
+    <form @if($action) action="{{ $action }}" method="POST" @else wire:submit="save" @endif class="space-y-6">
+        @if($action) @csrf @endif
 
-            <div 
-                class="{{ $cols }}" 
-                data-origin="{{ $origin }}" 
-                data-field="{{ $fieldName }}"
-            >
-                @if(isset(${$fieldName}))
-                    {{ ${$fieldName} }}
-                @else
-                    <livewire:dynamic-component
-                        :key="'field-'.$fieldName"
-                        :component="$component"
-                        wire:model="$modelPath"
-                        :label="$field['label'] ?? ''"
-                        :placeholder="$field['placeholder'] ?? ''"
-                        :type="$fieldType"
-                        :options="$options"
-                        :disabled="$field['disabled'] ?? false"
-                        :icon="$field['icon'] ?? ''"
-                        :iconSide="$field['iconSide'] ?? 'left'"
-                        :class="$field['class'] ?? ''"
-                    />
-                @endif
+        @php
+            $groups = $this->groupedSchema;
+            $hasTabs = $groups->count() > 1;
+        @endphp
+
+        @if(!$hasTabs)
+            <div class="grid grid-cols-12 gap-4 {{ $class }}">
+                @foreach($groups['main'] ?? [] as $name => $field)
+                    @include('daisylw4::form.auto-form-field-render', [
+                        'name'         => $name,
+                        'field'        => $field,
+                        'modelBinding' => $this->modelPrefix . '.' . $name,
+                    ])
+                @endforeach
             </div>
-        @endforeach
+        @else
+            <div role="tablist" class="tabs tabs-lifted w-full">
+                @foreach($groups as $context => $fields)
+                    <input type="radio" name="form_tabs" role="tab" class="tab"
+                           aria-label="{{ strtoupper($context) }}"
+                           {{ $loop->first ? 'checked' : '' }} />
 
-        <div class="col-span-12 pt-6">
-            <div class="flex items-center gap-2">
-                <livewire:actions.button
-                    :label="$submitLabel"
-                    type="submit"
-                    :variant="$submitVariant"
-                    wire:loading.attr="disabled"
-                />
-
-                <span wire:loading class="loading loading-spinner loading-sm text-primary"></span>
-                
-                @if(isset($actions))
-                    {{ $actions }}
-                @endif
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                        <div class="grid grid-cols-12 gap-4">
+                            @foreach($fields as $name => $field)
+                                @include('daisylw4::form.auto-form-field-render', [
+                                    'name'         => $name,
+                                    'field'        => $field,
+                                    'modelBinding' => $this->modelPrefix . '.' . $name,
+                                ])
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
             </div>
+        @endif
+
+        <div class="flex items-center gap-3 pt-4">
+            <button type="submit" class="btn {{ $submitVariant }}" wire:loading.attr="disabled">
+                <span wire:loading class="loading loading-spinner loading-xs"></span>
+                {{ $submitLabel }}
+            </button>
+            @if(isset($actions)) {{ $actions }} @endif
         </div>
-    </div>
-</form>
+    </form>
+</div>

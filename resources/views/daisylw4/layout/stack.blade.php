@@ -18,7 +18,7 @@ new class extends Component {
 
 @php
     // Translation logic
-    $stackLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
+    $stackLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
     
     // Build stack classes
     $stackClasses = trim(implode(' ', array_filter([

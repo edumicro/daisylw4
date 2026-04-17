@@ -20,7 +20,7 @@ new class extends Component {
 
 @php
     // Translation logic
-    $footerLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
+    $footerLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
     
     // Build footer classes
     $footerClasses = trim(implode(' ', array_filter([

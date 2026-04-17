@@ -5,7 +5,7 @@ use Livewire\Attributes\Modelable;
 
 new class extends Component {
     /**
-     * Mandatory edumicro standard props
+     * Mandatory daisylw4 standard props
      */
     public string $model = '';
     public string $label = '';
@@ -19,7 +19,7 @@ new class extends Component {
      */
     public array $availableFilters = [];
     #[Modelable]
-    public array $activeFilters = [];
+    public array $filters = [];
     public string $icon = 'heroicon-o-funnel';
     public bool $showBadge = true;
     public string $dropdownPosition = 'dropdown-end';
@@ -29,7 +29,7 @@ new class extends Component {
      */
     public function clearFilters(): void
     {
-        $this->activeFilters = [];
+        $this->filters = [];
         $this->dispatch('filters-cleared');
     }
 
@@ -39,12 +39,12 @@ new class extends Component {
     public function updateFilter(string $key, mixed $value): void
     {
         if (empty($value) || $value === '' || $value === null) {
-            unset($this->activeFilters[$key]);
+            unset($this->filters[$key]);
         } else {
-            $this->activeFilters[$key] = $value;
+            $this->filters[$key] = $value;
         }
 
-        $this->dispatch('filters-updated', filters: $this->activeFilters);
+        $this->dispatch('filters-updated', filters: $this->filters);
     }
 
     /**
@@ -52,7 +52,7 @@ new class extends Component {
      */
     public function getActiveFilterCount(): int
     {
-        return count(array_filter($this->activeFilters, fn($v) => $v !== '' && $v !== null));
+        return count(array_filter($this->filters, fn($v) => $v !== '' && $v !== null));
     }
     
 
@@ -61,7 +61,7 @@ new class extends Component {
      */
     public function isFilterActive(string $key): bool
     {
-        return isset($this->activeFilters[$key]) && !empty($this->activeFilters[$key]);
+        return isset($this->filters[$key]) && !empty($this->filters[$key]);
     }
 }; ?>
 
@@ -74,16 +74,16 @@ new class extends Component {
     <label
         tabindex="0"
         class="btn btn-sm btn-ghost gap-2 {{ $class }}"
-        title="{{ trans('daisylw4::filters') }}"
+        title="{{ trans('DaisyLw4::filters') }}"
     >
     
-        <x-dynamic-component :component="$icon" class="w-4 h-4" wire:loading.remove wire:target="activeFilters" />
-    <span class="loading loading-spinner loading-xs" wire:loading wire:target="activeFilters"></span>
+        <x-dynamic-component :component="$icon" class="w-4 h-4" wire:loading.remove wire:target="filters" />
+    <span class="loading loading-spinner loading-xs" wire:loading wire:target="filters"></span>
     
         @if ($label)
             <span>{{ $label }}</span>
         @else
-            <span>{{ trans('daisylw4::filters') }}</span>
+            <span>{{ trans('DaisyLw4::filters') }}</span>
         @endif
 
         @if ($showBadge && $this->getActiveFilterCount() > 0)
@@ -101,7 +101,7 @@ new class extends Component {
         <div class="space-y-4">
             <!-- Header -->
             <div class="flex items-center justify-between pb-3 border-b border-base-300">
-                <h3 class="font-semibold text-sm">{{ trans('daisylw4::filter_options') }}</h3>
+                <h3 class="font-semibold text-sm">{{ trans('DaisyLw4::filter_options') }}</h3>
                 
                 @if ($this->getActiveFilterCount() > 0)
                     <button
@@ -109,7 +109,7 @@ new class extends Component {
                         wire:click="clearFilters"
                         class="btn btn-ghost btn-xs"
                     >
-                        {{ trans('daisylw4::clear_all') }}
+                        {{ trans('DaisyLw4::clear_all') }}
                     </button>
                 @endif
             </div>
@@ -117,7 +117,7 @@ new class extends Component {
             <!-- Filters -->
             @if (empty($availableFilters))
                 <div class="text-center py-4 text-sm text-base-content/50">
-                    {{ trans('daisylw4::no_filters') }}
+                    {{ trans('DaisyLw4::no_filters') }}
                 </div>
             @else
                 @foreach ($availableFilters as $filter)
@@ -125,7 +125,7 @@ new class extends Component {
                         $filterKey = $filter['key'] ?? '';
                         $filterType = $filter['type'] ?? 'text';
                         $filterLabel = $filter['label'] ?? ucfirst($filterKey);
-                        $filterValue = $this->activeFilters[$filterKey] ?? '';
+                        $filterValue = $this->filters[$filterKey] ?? '';
                     @endphp
 
                     <div class="form-control">
@@ -136,10 +136,10 @@ new class extends Component {
                         @switch($filterType)
                             @case('select')
                                 <select
-                                    wire:model.live="activeFilters.{{ $filterKey }}"
+                                    wire:model.live="filters.{{ $filterKey }}"
                                     class="select select-bordered select-sm w-full"
                                 >
-                                    <option value="">{{ trans('daisylw4::select_option') }}</option>
+                                    <option value="">{{ trans('DaisyLw4::select_option') }}</option>
                                     @foreach ($filter['options'] ?? [] as $optionKey => $optionLabel)
                                         <option value="{{ $optionKey }}">{{ $optionLabel }}</option>
                                     @endforeach
@@ -149,7 +149,7 @@ new class extends Component {
                             @case('date')
                                 <input
                                     type="date"
-                                    wire:model.live="activeFilters.{{ $filterKey }}"
+                                    wire:model.live="filters.{{ $filterKey }}"
                                     class="input input-bordered input-sm w-full"
                                     placeholder="{{ $filter['placeholder'] ?? '' }}"
                                 />
@@ -159,15 +159,15 @@ new class extends Component {
                                 <div class="flex gap-2">
                                     <input
                                         type="date"
-                                        wire:model.live="activeFilters.{{ $filterKey }}_from"
+                                        wire:model.live="filters.{{ $filterKey }}_from"
                                         class="input input-bordered input-sm flex-1"
-                                        placeholder="{{ trans('daisylw4::from') }}"
+                                        placeholder="{{ trans('DaisyLw4::from') }}"
                                     />
                                     <input
                                         type="date"
-                                        wire:model.live="activeFilters.{{ $filterKey }}_to"
+                                        wire:model.live="filters.{{ $filterKey }}_to"
                                         class="input input-bordered input-sm flex-1"
-                                        placeholder="{{ trans('daisylw4::to') }}"
+                                        placeholder="{{ trans('DaisyLw4::to') }}"
                                     />
                                 </div>
                             @break
@@ -176,11 +176,11 @@ new class extends Component {
                             @case('toggle')
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-base-content/70">
-                                        {{ $filter['description'] ?? trans('daisylw4::enabled') }}
+                                        {{ $filter['description'] ?? trans('DaisyLw4::enabled') }}
                                     </span>
                                     <input
                                         type="checkbox"
-                                        wire:model.live="activeFilters.{{ $filterKey }}"
+                                        wire:model.live="filters.{{ $filterKey }}"
                                         class="toggle toggle-primary toggle-sm"
                                     />
                                 </div>
@@ -189,7 +189,7 @@ new class extends Component {
                             @case('number')
                                 <input
                                     type="number"
-                                    wire:model.live="activeFilters.{{ $filterKey }}"
+                                    wire:model.live="filters.{{ $filterKey }}"
                                     class="input input-bordered input-sm w-full"
                                     placeholder="{{ $filter['placeholder'] ?? '' }}"
                                     min="{{ $filter['min'] ?? '' }}"
@@ -200,7 +200,7 @@ new class extends Component {
                             @case('text')
                                 <input
                                     type="text"
-                                    wire:model.live.debounce.300ms="activeFilters.{{ $filterKey }}"
+                                    wire:model.live.debounce.300ms="filters.{{ $filterKey }}"
                                     class="input input-bordered input-sm w-full"
                                     placeholder="{{ $filter['placeholder'] ?? '' }}"
                                 />
@@ -209,7 +209,7 @@ new class extends Component {
                             @default
                                 <input
                                     type="text"
-                                    wire:model.live.debounce.300ms="activeFilters.{{ $filterKey }}"
+                                    wire:model.live.debounce.300ms="filters.{{ $filterKey }}"
                                     class="input input-bordered input-sm w-full"
                                 />
                         @endswitch
@@ -227,7 +227,7 @@ new class extends Component {
             @if ($this->getActiveFilterCount() > 0)
                 <div class="pt-3 border-t border-base-300 flex justify-between items-center text-xs text-base-content/60">
                     <span>
-                        {{ trans_choice('daisylw4::filters_active', $this->getActiveFilterCount(), ['count' => $this->getActiveFilterCount()]) }}
+                        {{ trans_choice('DaisyLw4::filters_active', $this->getActiveFilterCount(), ['count' => $this->getActiveFilterCount()]) }}
                     </span>
                 </div>
             @endif

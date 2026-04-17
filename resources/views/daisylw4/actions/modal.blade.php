@@ -105,17 +105,17 @@ new class extends Component {
                 </div>
 
                 @if ($showClose)
-                    <button type="button" class="btn btn-sm btn-circle btn-ghost" wire:click="closeModal" aria-label="{{ trans('daisylw4::close') }}">✕</button>
+                    <button type="button" class="btn btn-sm btn-circle btn-ghost" wire:click="closeModal" aria-label="{{ trans('DaisyLw4::close') }}">✕</button>
                 @endif
             </div>
 
             @if ($showActions)
                 <div class="modal-action">
                     <button type="button" class="btn {{ $cancelVariant }}" wire:click="closeModal">
-                        {{ $cancelText ?: trans('daisylw4::cancel') }}
+                        {{ $cancelText ?: trans('DaisyLw4::cancel') }}
                     </button>
                     <button type="button" class="btn {{ $confirmVariant }}" wire:click="confirm">
-                        {{ $confirmText ?: trans('daisylw4::confirm') }}
+                        {{ $confirmText ?: trans('DaisyLw4::confirm') }}
                     </button>
                 </div>
             @endif

@@ -105,7 +105,7 @@ new class extends Component {
                                             href="{{ $image['viewUrl'] }}"
                                             class="btn btn-sm btn-outline btn-light"
                                         >
-                                            {{ trans('daisylw4::view') }}
+                                            {{ trans('DaisyLw4::view') }}
                                         </a>
                                     @endif
 
@@ -114,7 +114,7 @@ new class extends Component {
                                             wire:click="{{ $image['wire'] }}"
                                             class="btn btn-sm btn-primary"
                                         >
-                                            {{ trans('daisylw4::select') }}
+                                            {{ trans('DaisyLw4::select') }}
                                         </button>
                                     @endif
                                 </div>
@@ -137,7 +137,7 @@ new class extends Component {
                         <x-dynamic-component :component="$icon" class="w-12 h-12 text-base-content/30" />
                     @endif
                 </div>
-                <p class="text-base-content/50">{{ trans('daisylw4::no_items') }}</p>
+                <p class="text-base-content/50">{{ trans('DaisyLw4::no_items') }}</p>
             </div>
         @endforelse
     </div>

@@ -101,7 +101,7 @@ new class extends Component {
         </div>
     @empty
         <div class="alert alert-info">
-            {{ trans('daisylw4::no_items') }}
+            {{ trans('DaisyLw4::no_items') }}
         </div>
     @endforelse
 

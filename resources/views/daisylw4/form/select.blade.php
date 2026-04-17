@@ -41,9 +41,9 @@ new class extends Component {
     public function mount(): void
     {
         $this->filteredOptions = $this->options;
-        $this->placeholder = $this->placeholder ?: trans('daisylw4::select_option');
-        $this->noResultsText = $this->noResultsText ?: trans('daisylw4::no_results');
-        $this->loadingText = $this->loadingText ?: trans('daisylw4::searching');
+        $this->placeholder = $this->placeholder ?: trans('DaisyLw4::select_option');
+        $this->noResultsText = $this->noResultsText ?: trans('DaisyLw4::no_results');
+        $this->loadingText = $this->loadingText ?: trans('DaisyLw4::searching');
     }
 
     /**
@@ -289,7 +289,7 @@ new class extends Component {
                         type="button"
                         wire:click.stop="clearSelection"
                         class="btn btn-ghost btn-xs"
-                        title="{{ trans('daisylw4::clear_selection') }}"
+                        title="{{ trans('DaisyLw4::clear_selection') }}"
                     >
                         ✕
                     </button>
@@ -311,7 +311,7 @@ new class extends Component {
                         <input
                             type="text"
                             wire:model.live.debounce.300ms="searchQuery"
-                            placeholder="{{ trans('daisylw4::search') }}"
+                            placeholder="{{ trans('DaisyLw4::search') }}"
                             class="input input-bordered input-sm w-full"
                             @if ($isOpen) autofocus @endif
                         />
@@ -322,12 +322,12 @@ new class extends Component {
                 @if ($loading)
                     <div class="p-4 text-center text-sm text-base-content/60">
                         <span class="loading loading-spinner loading-sm"></span>
-                        {{ $loadingText ?: trans('daisylw4::searching') }}
+                        {{ $loadingText ?: trans('DaisyLw4::searching') }}
                     </div>
                 @elseif (empty($filteredOptions))
                     <!-- No results -->
                     <div class="p-4 text-center text-sm text-base-content/50">
-                        {{ $noResultsText ?: trans('daisylw4::no_results') }}
+                        {{ $noResultsText ?: trans('DaisyLw4::no_results') }}
                     </div>
                 @else
                     <!-- Options list -->
@@ -396,7 +396,7 @@ new class extends Component {
                                 $count += is_array($item) ? count($item) : 1;
                             }
                         @endphp
-                        {{ trans_choice('daisylw4::options_available', $count, ['count' => $count]) }}
+                        {{ trans_choice('DaisyLw4::options_available', $count, ['count' => $count]) }}
                     </div>
                 @endif
             </div>

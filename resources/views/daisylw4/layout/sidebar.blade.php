@@ -23,7 +23,7 @@ new class extends Component {
 
 @php
     // Translation logic
-    $sidebarLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
+    $sidebarLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
     
     // Determine drawer position class
     $positionClass = match($position) {

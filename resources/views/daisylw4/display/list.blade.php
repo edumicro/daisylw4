@@ -24,6 +24,7 @@ new class extends Component {
     public bool $hoverable = false;
     public bool $selectable = false;
     public array $selected = [];
+    public array $filters = [];
 
     /**
      * Toggle item selection
@@ -65,6 +66,10 @@ new class extends Component {
         </div>
     @endif
 
+    @if(!empty($filters))
+        <livewire:flow::datatable-filters :availableFilters="$filters" dropdownPosition="dropdown-end" />
+    @endif
+
     @if ($ordered)
         <ol class="list-decimal list-inside {{ $class }} {{ $this->getSizeClass() }} space-y-2">
             @forelse ($items as $index => $item)
@@ -95,7 +100,7 @@ new class extends Component {
                     @endif
                 </li>
             @empty
-                <li class="text-base-content/50 italic">{{ trans('daisylw4::no_items') }}</li>
+                <li class="text-base-content/50 italic">{{ trans('DaisyLw4::no_items') }}</li>
             @endforelse
         </ol>
     @else
@@ -128,7 +133,7 @@ new class extends Component {
                     @endif
                 </li>
             @empty
-                <li class="text-base-content/50 italic">{{ trans('daisylw4::no_items') }}</li>
+                <li class="text-base-content/50 italic">{{ trans('DaisyLw4::no_items') }}</li>
             @endforelse
         </ul>
     @endif

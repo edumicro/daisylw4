@@ -22,7 +22,7 @@ new class extends Component {
 
 @php
     // Translation logic
-    $heroLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
+    $heroLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
     
     // Build hero classes
     $heroClasses = trim(implode(' ', array_filter([

@@ -95,7 +95,7 @@ new class extends Component {
             @endif
 
             @if ($optional)
-                <span class="text-base-content/50 text-xs font-normal">({{ trans('daisylw4::optional') }})</span>
+                <span class="text-base-content/50 text-xs font-normal">({{ trans('DaisyLw4::optional') }})</span>
             @endif
         </div>
 

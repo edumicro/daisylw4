@@ -92,7 +92,7 @@ new class extends Component {
                 @empty
                     <tr>
                         <td colspan="3" class="text-center py-8 text-base-content/50">
-                            {{ trans('daisylw4::no_items') }}
+                            {{ trans('DaisyLw4::no_items') }}
                         </td>
                     </tr>
                 @endforelse

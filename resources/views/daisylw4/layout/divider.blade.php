@@ -18,7 +18,7 @@ new class extends Component {
 
 @php
     // Try to translate in daisylw4, if it doesn't exist, Laravel returns the original key
-    $dividerLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
+    $dividerLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
 @endphp
 
 <div class="{{ trim('w-full ' . $containerClass) }}">

@@ -21,8 +21,8 @@ new class extends Component {
 
 @php
     // Translation logic
-    $maskLabel = $label ? (__('daisylw4::' . $label) !== 'daisylw4::' . $label ? __('daisylw4::' . $label) : __($label)) : '';
-    $maskAlt = $alt ? (__('daisylw4::' . $alt) !== 'daisylw4::' . $alt ? __('daisylw4::' . $alt) : __($alt)) : '';
+    $maskLabel = $label ? (__('DaisyLw4::' . $label) !== 'DaisyLw4::' . $label ? __('DaisyLw4::' . $label) : __($label)) : '';
+    $maskAlt = $alt ? (__('DaisyLw4::' . $alt) !== 'DaisyLw4::' . $alt ? __('DaisyLw4::' . $alt) : __($alt)) : '';
     
     // Build mask classes
     $maskClasses = trim(implode(' ', array_filter([

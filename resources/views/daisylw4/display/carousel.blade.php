@@ -86,7 +86,7 @@ new class extends Component {
         </div>
     @empty
         <div class="w-full h-96 flex items-center justify-center bg-base-200 rounded-lg">
-            <span class="text-base-content/50">{{ $label ?: trans('daisylw4::no_items') }}</span>
+            <span class="text-base-content/50">{{ $label ?: trans('DaisyLw4::no_items') }}</span>
         </div>
     @endforelse
 </div>
