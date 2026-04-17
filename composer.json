@@ -1,7 +1,13 @@
 {
     "name": "edumicro/daisylw4",
     "description": "Agnostic UI components for Laravel, Livewire 4 and DaisyUI",
-    "keywords": ["laravel", "livewire", "daisyui", "tailwind", "autoform"],
+    "keywords": [
+        "laravel",
+        "livewire",
+        "daisyui",
+        "tailwind",
+        "autoform"
+    ],
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -12,11 +18,10 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0|^13.0",
         "livewire/livewire": "^4.1",
         "blade-ui-kit/blade-heroicons": "^2.4"
     },
-    
     "autoload": {
         "psr-4": {
             "EduMicro\\DaisyLw4\\": "src/"
