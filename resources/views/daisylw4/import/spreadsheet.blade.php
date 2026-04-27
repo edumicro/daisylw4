@@ -73,6 +73,8 @@ new class extends Component {
     public string $serverFilePath = '';
     /** UUID issued when an async job is dispatched; consumed by the Echo listener. */
     public string $asyncImportId  = '';
+    /** Paths removed via deleteServerFile — used to hide them in the picker without re-fetching cfg. */
+    public array $deletedPaths = [];
 
     public int $step = 1;
 
@@ -198,6 +200,32 @@ new class extends Component {
             $this->step = 2;
         } catch (\Throwable $e) {
             $this->fileError = 'Erro ao ler o arquivo: ' . $e->getMessage();
+        }
+    }
+
+    /**
+     * Delete a server-side file from the imports directory.
+     *
+     * Path is validated to be inside storage/imports/{hospitalId}/ to prevent
+     * directory traversal. After deletion the path is added to $deletedPaths so
+     * the Alpine picker hides it immediately without re-fetching the file list.
+     */
+    public function deleteServerFile(string $path): void
+    {
+        $hospitalId = (int) ($this->config['hospitalId'] ?? 0);
+        $allowed    = realpath(storage_path('imports/' . $hospitalId)) ?: '';
+        $real       = realpath($path) ?: '';
+
+        if ($allowed === '' || $real === '' || ! str_starts_with($real, $allowed)) {
+            return;
+        }
+
+        if (is_file($real)) {
+            @unlink($real);
+        }
+
+        if (! in_array($real, $this->deletedPaths, true)) {
+            $this->deletedPaths[] = $real;
         }
     }
 
@@ -328,20 +356,32 @@ $cfg = array_merge([
             <template x-if="cfg.serverFiles && cfg.serverFiles.length > 0">
                 <div class="space-y-2">
                     <p class="text-sm text-base-content/60 mb-3">Selecione um arquivo para importar:</p>
-                    <template x-for="sf in cfg.serverFiles" :key="sf.path">
-                        <button
-                            type="button"
-                            @click="$wire.selectServerFile(sf.path, sf.name)"
-                            class="w-full flex items-center gap-3 p-3 rounded-lg border border-base-300 hover:border-primary/60 hover:bg-base-200/40 transition-colors text-left"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate" x-text="sf.name"></p>
-                                <p class="text-xs text-base-content/40" x-text="sf.sizeLabel ?? ''"></p>
-                            </div>
-                        </button>
+                    <template x-for="sf in cfg.serverFiles.filter(sf => !$wire.deletedPaths.includes(sf.path))" :key="sf.path">
+                        <div class="flex items-center gap-1">
+                            <button
+                                type="button"
+                                @click="$wire.selectServerFile(sf.path, sf.name)"
+                                class="flex-1 flex items-center gap-3 p-3 rounded-lg border border-base-300 hover:border-primary/60 hover:bg-base-200/40 transition-colors text-left"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-sm truncate" x-text="sf.name"></p>
+                                    <p class="text-xs text-base-content/40" x-text="sf.sizeLabel ?? ''"></p>
+                                </div>
+                            </button>
+                            <button
+                                type="button"
+                                @click.stop="$wire.deleteServerFile(sf.path)"
+                                title="Eliminar arquivo"
+                                class="btn btn-ghost btn-sm text-error hover:bg-error/10 shrink-0"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
                     </template>
 
                     <div wire:loading wire:target="selectServerFile" class="flex items-center justify-center gap-2 mt-2 text-sm text-base-content/60">
